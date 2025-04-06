@@ -37,6 +37,13 @@ class Qwen2VLVisionConfig(PretrainedConfig):
         patch_size=14,
         spatial_merge_size=2,
         temporal_patch_size=2,
+        # --- MoE specific params ---
+        moe_dtype="bfloat16",
+        moe_scaling=0.25,
+        num_experts=8,
+        topk=1,
+        # output_router_logits=True,
+        adapter_dim=64,  # <--- added here
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -51,6 +58,16 @@ class Qwen2VLVisionConfig(PretrainedConfig):
         self.patch_size = patch_size
         self.spatial_merge_size = spatial_merge_size
         self.temporal_patch_size = temporal_patch_size
+
+        # --- MoE specific params ---
+        self.num_experts = num_experts
+        self.topk = topk
+        self.adapter_dim = adapter_dim
+        self.moe_scaling = moe_scaling
+        self.moe_dtype = moe_dtype
+        self.intermediate_size=embed_dim
+
+
 
 
 class Qwen2VLConfig(PretrainedConfig):

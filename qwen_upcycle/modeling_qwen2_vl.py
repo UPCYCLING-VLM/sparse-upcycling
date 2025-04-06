@@ -19,6 +19,7 @@
 # limitations under the License.
 """ PyTorch QWEN 2 VL model."""
 import math
+import copy
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -429,20 +430,33 @@ class MOEGateAdapter(nn.Module):
 
 ##MOE changes in the VisionMLP Layer(nn.Module)
 class VisionMlp(nn.Module):
-    def __init__(self, dim: int, hidden_dim: int, hidden_act: str) -> None:
+    def __init__(self, dim: int, hidden_dim: int, hidden_act: str, use_moe: bool = True, config=None) -> None:
         super().__init__()
+        self.use_moe = use_moe
         self.fc1 = nn.Linear(dim, hidden_dim)
         self.act = ACT2FN[hidden_act]
         self.fc2 = nn.Linear(hidden_dim, dim)
-        #moe adapter
-        # self.moe_adapter = MOEGateAdapter(config)
+
+        if self.use_moe:
+            config_copy = copy.deepcopy(config)
+            config_copy.hidden_size=dim
+            self.moe_adapter = MOEGateAdapter(config_copy)
 
     def forward(self, x) -> torch.Tensor:
+        router_hidden_states=x
+        hidden = self.act(self.fc1(x))
+        proj = self.fc2(hidden)
 
-        proj =  self.fc2(self.act(self.fc1(x)))
-        # proj, router_logits = self.moe_adapter(
-        #     proj, proj, x)
-        return proj#, router_logits
+        if self.use_moe:
+            # x is used for router_hidden_states
+            proj, router_logits = self.moe_adapter(
+                proj,
+                proj,
+                router_hidden_states
+            )
+            return proj, router_logits
+
+        return proj, None
     
 
 class Qwen2MLP(nn.Module):
@@ -612,8 +626,9 @@ QWEN2_VL_VISION_ATTENTION_CLASSES = {
 
 
 class Qwen2VLVisionBlock(nn.Module):
-    def __init__(self, config, attn_implementation: str = "sdpa") -> None:
+    def __init__(self, config, attn_implementation: str = "sdpa", use_moe: bool = True) -> None:
         super().__init__()
+        self.use_moe = use_moe
         self.norm1 = LayerNorm(config.embed_dim, eps=1e-6)
         self.norm2 = LayerNorm(config.embed_dim, eps=1e-6)
         mlp_hidden_dim = int(config.embed_dim * config.mlp_ratio)
@@ -621,8 +636,14 @@ class Qwen2VLVisionBlock(nn.Module):
         self.attn = QWEN2_VL_VISION_ATTENTION_CLASSES[attn_implementation](
             config.embed_dim, num_heads=config.num_heads
         )
-        # self.output_router_logits = True
-        self.mlp = VisionMlp(dim=config.embed_dim, hidden_dim=mlp_hidden_dim, hidden_act=config.hidden_act)
+
+        self.mlp = VisionMlp(
+            dim=config.embed_dim,
+            hidden_dim=mlp_hidden_dim,
+            hidden_act=config.hidden_act,
+            use_moe=self.use_moe,
+            config=config,
+        )
 
     def forward(
         self,
@@ -631,18 +652,18 @@ class Qwen2VLVisionBlock(nn.Module):
         rotary_pos_emb: Optional[torch.Tensor] = None,
         position_embeddings: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
     ) -> torch.Tensor:
+
         hidden_states = hidden_states + self.attn(
             self.norm1(hidden_states),
             cu_seqlens=cu_seqlens,
             rotary_pos_emb=rotary_pos_emb,
             position_embeddings=position_embeddings,
         )
-        mlp_hidden_states = self.mlp(self.norm2(hidden_states))
+
+        normed_hidden = self.norm2(hidden_states)
+        mlp_hidden_states, _ = self.mlp(normed_hidden)
         hidden_states = hidden_states + mlp_hidden_states
 
-        #adding output_router_logits
-        # if self.output_router_logits:
-        #     outputs += (router_logits,)
         return hidden_states
 
 
