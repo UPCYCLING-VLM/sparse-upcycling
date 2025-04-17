@@ -6,7 +6,7 @@ from qwen_vl_utils import process_vision_info
 
 def main():
     # Load and configure Qwen2-VL with MoE and LoRA settings
-    model_config = Qwen2VLConfig.from_pretrained("Qwen/Qwen2-VL-2B-Instruct")
+    model_config = Qwen2VLConfig.from_pretrained("Qwen/Qwen2-VL-2B-Instruct", cache_dir=".")
     model_config.update({
         "pretraining_tp": 1,
         "moe_dtype": "bfloat16",
@@ -33,7 +33,7 @@ def main():
         output_loading_info=False,
     )
 
-    model = model.eval().cuda()
+    model.eval().cuda()
 
     # Load processor (tokenizer + vision preprocessor)
     processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct")
