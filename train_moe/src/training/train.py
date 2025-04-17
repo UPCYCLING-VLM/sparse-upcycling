@@ -1,10 +1,15 @@
 import os
 import torch
+import math
+
 from peft import LoraConfig, get_peft_model
 import ast
+from peft.tuners.lora import LoraLayer
+
 from transformers import AutoProcessor, BitsAndBytesConfig, HfArgumentParser#Qwen2_5_VLForConditionalGeneration #Qwen2VLForConditionalGeneration,
 from training.configuration_qwen2_vl_moe import Qwen2VLConfig, Qwen2VLVisionConfig
 from training.modeling_qwen2_vl import Qwen2VLForConditionalGeneration
+from torch import nn
 
 from training.trainer import QwenTrainer
 from training.data import make_supervised_data_module
@@ -214,6 +219,25 @@ def train():
                 if hasattr(module, 'weight'):
                     if training_args.bf16 and module.weight.dtype == torch.float32:
                         module = module.to(torch.bfloat16)
+            if "adapter" in name:
+                if training_args.bf16:
+                    module = module.to(torch.bfloat16)
+                else:
+                    module = module.to(torch.float32)
+                    
+    for n, p in model.named_parameters():
+        if "adapter_up" in n:
+            nn.init.zeros_(p)
+        if "adapter_down" in n:
+            nn.init.kaiming_uniform_(p, a=math.sqrt(5))
+        if "router" in n:
+            nn.init.kaiming_uniform_(p, a=math.sqrt(5))
+
+    for n, p in model.named_parameters():
+        if "adapter" in n:
+            p.requires_grad = True
+
+    model.config.use_cache = False
 
     data_module = make_supervised_data_module(model_id=model_args.model_id,
                                               processor=processor,
