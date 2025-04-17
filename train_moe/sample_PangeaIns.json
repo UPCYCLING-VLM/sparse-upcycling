@@ -1,0 +1,168 @@
+[
+  {
+    "id": "translation-cambrian_000000132137",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "<image>\nVeuillez fournir les coordonnées de la zone délimitant la région décrite par cette phrase : le garçon tirant des valises."
+      },
+      {
+        "from": "gpt",
+        "value": "[0.36, 0.09, 0.53, 0.58]"
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description de cette région : [0.26, 0.43, 0.46, 0.8]."
+      },
+      {
+        "from": "gpt",
+        "value": "Sac noir."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description de cette région : [0.44, 0.42, 0.66, 0.79]."
+      },
+      {
+        "from": "gpt",
+        "value": "Une valise trolley rouge."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description de cette région : [0.44, 0.42, 0.66, 0.79]."
+      },
+      {
+        "from": "gpt",
+        "value": "Valise rouge."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description de cette région : [0.44, 0.42, 0.66, 0.79]."
+      },
+      {
+        "from": "gpt",
+        "value": "Valise rouge."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir les coordonnées de la zone délimitant la région décrite par cette phrase : un camion blanc sans couvre-benne."
+      },
+      {
+        "from": "gpt",
+        "value": "[0.18, 0.0, 0.58, 0.17]"
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description de cette région : [0.26, 0.43, 0.46, 0.8]."
+      },
+      {
+        "from": "gpt",
+        "value": "Valise noire."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description de cette région : [0.18, 0.0, 0.58, 0.17]."
+      },
+      {
+        "from": "gpt",
+        "value": "Fourgonnette."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description de cette région : [0.44, 0.42, 0.66, 0.79]."
+      },
+      {
+        "from": "gpt",
+        "value": "Valise rouge dans la main des garçons."
+      }
+    ],
+    "image": "cambrian/images/coco/train2017/000000132137.jpg",
+    "language": "French"
+  },
+  {
+    "id": "translation-cambrian_VG_100K/2319635",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "<image>\nVeuillez fournir une courte description pour cette région : [0,01, 0,13, 0,35, 0,35]."
+      },
+      {
+        "from": "gpt",
+        "value": "Des arbres aux troncs fins."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description pour cette région : [0,29, 0,52, 0,46, 0,65]."
+      },
+      {
+        "from": "gpt",
+        "value": "Un frisbee jaune."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description pour cette région : [0,31, 0,14, 0,46, 0,35]."
+      },
+      {
+        "from": "gpt",
+        "value": "Ses bras sont pliés."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description pour cette région : [0,36, 0,15, 0,39, 0,19]."
+      },
+      {
+        "from": "gpt",
+        "value": "Il a un bonnet noir sur la tête."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description pour cette région : [0,01, 0,69, 0,49, 0,85]."
+      },
+      {
+        "from": "gpt",
+        "value": "Sol avec de l'herbe inégale."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description pour cette région : [0,66, 0,26, 0,83, 0,42]."
+      },
+      {
+        "from": "gpt",
+        "value": "La tête d'une femme."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description pour cette région : [0,64, 0,25, 0,87, 0,52]."
+      },
+      {
+        "from": "gpt",
+        "value": "Une femme avec des cheveux noirs."
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir les coordonnées de la boîte englobante de la région que décrit cette phrase : un homme portant un short noir."
+      },
+      {
+        "from": "gpt",
+        "value": "[0.32, 0.14, 0.44, 0.36]"
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir les coordonnées de la boîte englobante de la région que décrit cette phrase : un frisbee jaune."
+      },
+      {
+        "from": "gpt",
+        "value": "[0.29, 0.53, 0.49, 0.71]"
+      },
+      {
+        "from": "human",
+        "value": "Veuillez fournir une courte description pour cette région : [0,63, 0,14, 0,67, 0,21]."
+      },
+      {
+        "from": "gpt",
+        "value": "Une personne habillée tout en bleu."
+      }
+    ],
+    "image": "cambrian/images/vg/VG_100K/2319635.jpg",
+    "language": "French"
+  }
+]
