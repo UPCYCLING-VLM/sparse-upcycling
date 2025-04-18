@@ -7,7 +7,7 @@ from peft import LoraConfig, get_peft_model
 import ast
 from peft.tuners.lora import LoraLayer
 
-from transformers import AutoProcessor, BitsAndBytesConfig, HfArgumentParser#Qwen2_5_VLForConditionalGeneration #Qwen2VLForConditionalGeneration,
+from transformers import AutoProcessor, BitsAndBytesConfig, HfArgumentParser, Qwen2_5_VLForConditionalGeneration #Qwen2VLForConditionalGeneration,
 from training.configuration_qwen2_vl_moe import Qwen2VLConfig, Qwen2VLVisionConfig
 from training.modeling_qwen2_vl import Qwen2VLForConditionalGeneration
 from torch import nn
@@ -29,7 +29,7 @@ from training.transformers_utils import (
 transformers.integrations.get_keys_to_not_convert = get_keys_to_not_convert
 
 
-local_rank = 1
+local_rank = None
 
 class SavePeftModelCallback(transformers.TrainerCallback):
     def save_model(self, args, state, kwargs):
@@ -162,7 +162,7 @@ def train():
     bnb_model_from_pretrained_args = {}
     if training_args.bits in [4,8]:
         bnb_model_from_pretrained_args.update(dict(
-            device_map={"":training_args.device},
+            #device_map={"":training_args.device},
             quantization_config = BitsAndBytesConfig(
                 load_in_4bit=training_args.bits==4,
                 load_in_8bit=training_args.bits==8,
@@ -205,13 +205,13 @@ def train():
             model_args.model_id,
             config = model_config,
             # torch_dtype=compute_dtype,
-            attn_implementation="flash_attention_2" if not training_args.disable_flash_attn2 else "sdpa", **bnb_model_from_pretrained_args)
-        #     quantization_config = BitsAndBytesConfig(
-        #     load_in_4bit=True,
-        #     bnb_4bit_compute_dtype=torch.bfloat16,
-        #     bnb_4bit_use_double_quant=True,
-        #     bnb_4bit_quant_type="nf4",
-        # ))
+            attn_implementation="flash_attention_2" if not training_args.disable_flash_attn2 else "sdpa", #**bnb_model_from_pretrained_args)
+            quantization_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.bfloat16,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+        ))
     # **bnb_model_from_pretrained_args)
 
     model.config.use_cache = False
